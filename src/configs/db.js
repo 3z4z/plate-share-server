@@ -16,7 +16,7 @@ const client = new MongoClient(uri, {
   },
 });
 
-let db, usersCollection, foodsCollection;
+let db, usersCollection, foodsCollection, requestsCollection;
 
 async function connectDB() {
   try {
@@ -25,7 +25,8 @@ async function connectDB() {
     db = client.db("plateShareDB");
     usersCollection = db.collection("users");
     foodsCollection = db.collection("foods");
-    return { usersCollection, foodsCollection, ObjectId };
+    requestsCollection = db.collection("requests");
+    return { usersCollection, foodsCollection, requestsCollection, ObjectId };
   } catch (error) {
     console.log("MongoDB Connection failed", error);
     process.exit(1);
