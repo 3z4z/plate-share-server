@@ -81,7 +81,7 @@ const requestsRoute = ({ requestsCollection, foodsCollection, ObjectId }) => {
 
         let food_status = "Available";
         if (updatedDoc.requestStatus.toLowerCase() === "accepted") {
-          food_status = "Unavailable";
+          food_status = "Donated";
         } else if (updatedDoc.requestStatus.toLowerCase() === "rejected") {
           food_status = "Available";
         } else if (updatedDoc.requestStatus.toLowerCase() === "pending") {
@@ -99,7 +99,6 @@ const requestsRoute = ({ requestsCollection, foodsCollection, ObjectId }) => {
           const requestsQuery = {
             foodId: request.foodId,
             _id: { $ne: new ObjectId(requestId) },
-            requestStatus: "Pending",
           };
           const requestsUpdate = { $set: { requestStatus: "Rejected" } };
           await requestsCollection.updateMany(requestsQuery, requestsUpdate, {
@@ -108,7 +107,7 @@ const requestsRoute = ({ requestsCollection, foodsCollection, ObjectId }) => {
         }
       });
 
-      res.status(200).send("Request and food status updated successfully.");
+      res.send("Request and food status updated successfully.");
     } catch (err) {
       console.error(err);
       res.status(500).send("Server Error.");
