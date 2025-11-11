@@ -28,7 +28,7 @@ const foodsRoute = ({ foodsCollection, ObjectId }) => {
       const result = await cursor.toArray();
       res.send(result);
     } catch {
-      res.status(500).send({ message: "Server Failed while fetching foods" });
+      res.status(500).send("Server Failed while fetching foods");
     }
   });
 
@@ -75,7 +75,7 @@ const foodsRoute = ({ foodsCollection, ObjectId }) => {
       const query = { name: newFood.name };
       const isExistedFood = await foodsCollection.findOne(query);
       if (isExistedFood) {
-        res.status(409).send(`Duplicate food can't be added`);
+        res.status(409).send("Duplicate food can't be added");
       } else {
         const result = await foodsCollection.insertOne(newFood);
         res.status(200).send(result);
@@ -88,15 +88,10 @@ const foodsRoute = ({ foodsCollection, ObjectId }) => {
   // update a food
   router.patch("/:id", verifyAuthToken, async (req, res) => {
     try {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
+      const query = { _id: new ObjectId(req.params.id) };
       const food = await foodsCollection.findOne(query);
-      // console.log("DB email:", food.donor_email);
-      // console.log("Token email:", req.auth_email);
       if (food.donor_email !== req.auth_email) {
-        return res.status(403).send({
-          message: "Forbidden. You are not allowed to edit this food.",
-        });
+        return res.status(403).send("Access Forbidden.");
       }
       const updatedDoc = req.body;
       const update = {
@@ -108,7 +103,7 @@ const foodsRoute = ({ foodsCollection, ObjectId }) => {
           pickup_location: updatedDoc.pickup_location,
           description: updatedDoc.description,
           expire_date: updatedDoc.expire_date,
-          last_edit: updatedDoc.last_edit,
+          edited_at: updatedDoc.edited_at,
         },
       };
 
@@ -116,9 +111,7 @@ const foodsRoute = ({ foodsCollection, ObjectId }) => {
       res.send(result);
     } catch (err) {
       console.error("Update error:", err.message);
-      res.status(500).send({
-        message: "Can't update the document. Server Error",
-      });
+      res.status(500).send("Can't update the document. Server Error");
     }
   });
 
@@ -128,12 +121,12 @@ const foodsRoute = ({ foodsCollection, ObjectId }) => {
       const query = { _id: new ObjectId(req.params.id) };
       const result = await foodsCollection.deleteOne(query);
       if (result.deletedCount === 0) {
-        return res.status(404).send({ message: "Nothing is deleted." });
+        return res.status(404).send("Nothing is deleted.");
       }
       res.send(result);
     } catch (error) {
       console.log(error);
-      res.status(500).send({ message: "Something Went Wrong!" });
+      res.status(500).send("Something Went Wrong!");
     }
   });
 

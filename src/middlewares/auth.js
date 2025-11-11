@@ -17,17 +17,17 @@ const verifyAuthToken = async (req, res, next) => {
   try {
     const authorization = req.headers.authorization;
     if (!authorization) {
-      return res.status(401).send({
-        message: "Unauthorized Access. Reason: Authorization header missing.",
-      });
+      return res
+        .status(401)
+        .send("Unauthorized Access. Reason: Authorization header missing.");
     }
 
     const [scheme, authToken] = authorization.split(" ");
 
     if (scheme !== "Bearer" || !authToken) {
-      return res.status(401).send({
-        message: "Unauthorized Access. Reason: Invalid Bearer Token format.",
-      });
+      return res
+        .status(401)
+        .send("Unauthorized Access. Reason: Invalid Bearer Token format.");
     }
 
     const userInfo = await admin.auth().verifyIdToken(authToken);
@@ -40,7 +40,7 @@ const verifyAuthToken = async (req, res, next) => {
     console.error("Token verification failed:", err.message);
     return res
       .status(401)
-      .send({ message: `Unauthorized Access. Token invalid or expired.` });
+      .send("Unauthorized Access. Token invalid or expired");
   }
 };
 
