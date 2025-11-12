@@ -29,7 +29,7 @@
 
 ```bash
 git clone https://github.com/3z4z/plate-share-server
-cd plateshare-server
+cd plate-share-server
 npm install
 ```
 
