@@ -8,7 +8,6 @@ const decoded = Buffer.from(
   "base64"
 ).toString("utf8");
 const serviceAccount = JSON.parse(decoded);
-// const serviceAccount = require("../../plate-share-3z4z-firebase-adminsdk.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),

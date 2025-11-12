@@ -4,6 +4,7 @@ const { verifyAuthToken } = require("../middlewares/auth");
 const requestsRoute = ({ requestsCollection, foodsCollection, ObjectId }) => {
   const router = express.Router();
 
+  // Get requests by query
   router.get("/", verifyAuthToken, async (req, res) => {
     try {
       const { email, foodId } = req.query;
@@ -32,6 +33,7 @@ const requestsRoute = ({ requestsCollection, foodsCollection, ObjectId }) => {
     }
   });
 
+  // Post a request
   router.post("/", verifyAuthToken, async (req, res) => {
     try {
       const newRequest = req.body;
@@ -51,6 +53,7 @@ const requestsRoute = ({ requestsCollection, foodsCollection, ObjectId }) => {
     }
   });
 
+  // Edit a request
   router.patch("/:requestId", verifyAuthToken, async (req, res) => {
     const session = requestsCollection.client.startSession();
     try {
@@ -60,12 +63,10 @@ const requestsRoute = ({ requestsCollection, foodsCollection, ObjectId }) => {
       const request = await requestsCollection.findOne({
         _id: new ObjectId(requestId),
       });
-      //   if (!request) return res.status(404).send("Request not found.");
 
       const food = await foodsCollection.findOne({
         _id: new ObjectId(request.foodId),
       });
-      //   if (!food) return res.status(404).send("Food not found.");
 
       if (food.donor_email !== req.auth_email)
         return res.status(403).send("Access Forbidden.");
@@ -115,7 +116,9 @@ const requestsRoute = ({ requestsCollection, foodsCollection, ObjectId }) => {
       await session.endSession();
     }
   });
-  router.delete("/:id", async (req, res) => {
+
+  // Delete a request
+  router.delete("/:id", verifyAuthToken, async (req, res) => {
     try {
       const query = { _id: new ObjectId(req.params.id) };
       const result = await requestsCollection.deleteOne(query);

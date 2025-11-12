@@ -3,7 +3,7 @@ const express = require("express");
 const usersRoute = ({ usersCollection, ObjectId }) => {
   const router = express.Router();
 
-  //   post a user
+  // post a user
   router.post("/", async (req, res) => {
     try {
       const newUser = req.body;
