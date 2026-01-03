@@ -53,11 +53,25 @@ const requestsRoute = ({ requestsCollection, foodsCollection, ObjectId }) => {
     }
   });
 
+  // Get user's requests by email param
+  router.get("/all/:email", async (req, res) => {
+    const { email } = req.params;
+    const foods = await foodsCollection
+      .find({ donor_email: email })
+      .project({ _id: 1 })
+      .toArray();
+    if (foods.length < 0) return res.send({ message: "No requests available" });
+    const foodIds = await foods.map((f) => f._id.toString());
+    const result = await requestsCollection
+      .find({ foodId: { $in: foodIds } })
+      .toArray();
+    return res.send(result);
+  });
   // Edit a request
   router.patch("/:requestId", verifyAuthToken, async (req, res) => {
     const session = requestsCollection.client.startSession();
     try {
-      const requestId = req.params.requestId;
+      const { requestId } = req.params;
       const updatedDoc = req.body;
 
       const request = await requestsCollection.findOne({

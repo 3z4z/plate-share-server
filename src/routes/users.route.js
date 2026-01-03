@@ -19,6 +19,12 @@ const usersRoute = ({ usersCollection, ObjectId }) => {
       res.status(500).send("Server failed to create new Account");
     }
   });
+  router.patch("/:email", async (req, res) => {
+    const { name, image } = req.body;
+    const { email } = req.params;
+    const result = await usersCollection.updateOne({ email }, { name, image });
+    return res.send(result);
+  });
   return router;
 };
 
