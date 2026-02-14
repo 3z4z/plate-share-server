@@ -22,7 +22,13 @@ const usersRoute = ({ usersCollection, ObjectId }) => {
   router.patch("/:email", async (req, res) => {
     const { name, image } = req.body;
     const { email } = req.params;
-    const result = await usersCollection.updateOne({ email }, { name, image });
+    const updateUser = {
+      $set: {
+        name,
+        image,
+      },
+    };
+    const result = await usersCollection.updateOne({ email }, updateUser);
     return res.send(result);
   });
   return router;
